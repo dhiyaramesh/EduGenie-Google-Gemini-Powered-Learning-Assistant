@@ -5,10 +5,10 @@ load_dotenv()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 MODELS = ["gemini-3.8-flash", "gemini-flash-latest", "gemini-pro-latest", "gemini-2.0-flash-lite"]
 
-def get_learning_path(goal):
+def get_summary(text):
     for model in MODELS:
         try:
-            r = client.models.generate_content(model=model, contents=f"Create 4-week learning path for {goal}")
+            r = client.models.generate_content(model=model, contents=f"Summarize in 5 bullets: {text}")
             return r.text
         except:
             time.sleep(1)
