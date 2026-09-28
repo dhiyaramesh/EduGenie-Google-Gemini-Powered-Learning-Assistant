@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduGenie - AI Tutor</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#f0f2ff;min-height:100vh}
+.header{background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:20px;text-align:center}
+.container{max-width:900px;margin:20px auto;padding:0 20px}
+.tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.tab{background:white;padding:12px 20px;border-radius:25px;cursor:pointer;border:2px solid #667eea}
+.tab.active{background:#667eea;color:white}
+.card{background:white;padding:25px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.1);margin-bottom:20px}
+input,textarea{width:100%;padding:12px;border:2px solid #e0e0e0;border-radius:10px;margin:10px 0;font-size:15px}
+button{background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;padding:12px 30px;border-radius:25px;cursor:pointer;font-weight:bold}
+button:hover{opacity:0.9}
+#answer{margin-top:20px;padding:15px;background:#f8f9ff;border-radius:10px;white-space:pre-wrap;line-height:1.6;min-height:60px;border-left:4px solid #667eea}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="header"><h1>🎓 EduGenie - Your AI Learning Companion</h1><p>Powered by Gemini 3.8 Flash</p></div>
+<div class="container">
+<div class="tabs">
+<div class="tab active" onclick="showTab('qna')">💬 Q&A</div>
+<div class="tab" onclick="showTab('explain')">📖 Explain</div>
+<div class="tab" onclick="showTab('quiz')">🧠 Quiz</div>
+<div class="tab" onclick="showTab('summary')">📝 Summary</div>
+<div class="tab" onclick="showTab('path')">🚀 Learning Path</div>
+</div>
+
+<div id="qna" class="card">
+<h3>Ask Any Question</h3>
+<input id="q" placeholder="What is black hole?">
+<button onclick="ask()">Get Answer</button>
+</div>
+
+<div id="explain" class="card hidden">
+<h3>Explain a Topic</h3>
+<input id="e" placeholder="Photosynthesis">
+<button onclick="explainTopic()">Explain</button>
+</div>
+
+<div id="quiz" class="card hidden">
+<h3>Generate Quiz</h3>
+<input id="qu" placeholder="Topic for quiz e.g. Python">
+<button onclick="genQuiz()">Generate Quiz</button>
+</div>
+
+<div id="summary" class="card hidden">
+<h3>Summarize Text</h3>
+<textarea id="s" rows="4" placeholder="Paste long text here..."></textarea>
+<button onclick="sumText()">Summarize</button>
+</div>
+
+<div id="path" class="card hidden">
+<h3>Learning Path</h3>
+<input id="p" placeholder="Your goal e.g. Learn Data Science">
+<button onclick="genPath()">Get Path</button>
+</div>
+
+<div class="card"><h3>Answer:</h3><div id="answer">Answer will appear here...</div></div>
+</div>
+
+<script>
+function showTab(id){
+ document.querySelectorAll('.card').forEach(c=>{
+  if(c.id==='qna'||c.id==='explain'||c.id==='quiz'||c.id==='summary'||c.id==='path') c.classList.add('hidden')
+ });
+ document.getElementById(id).classList.remove('hidden');
+ document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+ event.target.classList.add('active');
+}
+async function ask(){
+ let fd=new FormData(); fd.append('question',document.getElementById('q').value);
+ document.getElementById('answer').innerText='Thinking...';
+ let r=await fetch('/ask',{method:'POST',body:fd}); let d=await r.json();
+ document.getElementById('answer').innerText=d.answer;
+}
+async function explainTopic(){
+ let fd=new FormData(); fd.append('topic',document.getElementById('e').value);
+ document.getElementById('answer').innerText='Explaining...';
+ let r=await fetch('/explain',{method:'POST',body:fd}); let d=await r.json();
+ document.getElementById('answer').innerText=d.answer;
+}
+async function genQuiz(){
+ let fd=new FormData(); fd.append('topic',document.getElementById('qu').value);
+ document.getElementById('answer').innerText='Creating quiz...';
+ let r=await fetch('/quiz',{method:'POST',body:fd}); let d=await r.json();
+ document.getElementById('answer').innerText=d.answer;
+}
+async function sumText(){
+ let fd=new FormData(); fd.append('text',document.getElementById('s').value);
+ document.getElementById('answer').innerText='Summarizing...';
+ let r=await fetch('/summarize',{method:'POST',body:fd}); let d=await r.json();
+ document.getElementById('answer').innerText=d.answer;
+}
+async function genPath(){
+ let fd=new FormData(); fd.append('goal',document.getElementById('p').value);
+ document.getElementById('answer').innerText='Building path...';
+ let r=await fetch('/learning-path',{method:'POST',body:fd}); let d=await r.json();
+ document.getElementById('answer').innerText=d.answer;
+}
+</script>
+</body>
+</html>
